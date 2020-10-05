@@ -5,7 +5,7 @@ class Matrix
 
     public int rows;
     public int cols;
-    public List<float[]> matrix = new List<float[]>();
+    public List<float[]> data = new List<float[]>();
 
     public Matrix(int rows, int cols)
     {
@@ -14,10 +14,10 @@ class Matrix
 
         for(int i = 0; i < rows; i++)
         {
-            matrix.Add(new float[cols]);
+            data.Add(new float[cols]);
             for(int j = 0; j < cols; j++)
             {
-                matrix[i][j] = 0f;
+                data[i][j] = 0f;
             }
         }
     }
@@ -27,10 +27,10 @@ class Matrix
     {
         for(int i = 0; i < this.rows; i++)
         {
-            matrix.Add(new float[this.cols]);
+            data.Add(new float[this.cols]);
             for(int j = 0; j < this.cols; j++)
             {
-                matrix[i][j] = random.Next(20);
+                data[i][j] = random.Next(20);
             }
         }
     }
@@ -39,27 +39,24 @@ class Matrix
     {
         for(int i = 0; i < rows; i++)
         {
-            matrix.Add(new float[this.cols]);
+            data.Add(new float[this.cols]);
             for(int j = 0; j < this.cols; j++)
             {
-                matrix[i][j] *= n;
+                data[i][j] *= n;
             }
         }
     }
 
-    public Matrix multiply(Matrix b)
+    public static Matrix multiply(Matrix a, Matrix b)
     {
-        if(this.cols != b.rows)
+        if(a.cols != b.rows)
         {
             Console.WriteLine(" The dimensions must match !! ");
             return null;
         }
         else
         {
-            Matrix a = this;
-            // List<float[]> b = mat.matrix;
-
-            Matrix result = new Matrix(this.rows, b.cols);
+            Matrix result = new Matrix(a.rows, b.cols);
 
             for(int i = 0; i < result.rows; i++)
             {
@@ -69,9 +66,9 @@ class Matrix
                     
                     for(int k = 0; k < a.cols; k++)
                     {
-                        sum += a.matrix[i][k] * b.matrix[k][j];
+                        sum += a.data[i][k] * b.data[k][j];
                     }
-                    result.matrix[i][j] = sum;
+                    result.data[i][j] = sum;
                 }
             }
             return result;
@@ -83,10 +80,10 @@ class Matrix
     {
         for(int i = 0; i < this.rows; i++)
         {
-            matrix.Add(new float[this.cols]);
+            data.Add(new float[this.cols]);
             for(int j = 0; j < this.cols; j++)
             {
-                matrix[i][j] += n;
+                data[i][j] += n;
             }
         }
     }
@@ -95,10 +92,10 @@ class Matrix
     {
         for(int i = 0; i < this.rows; i++)
         {
-            matrix.Add(new float[this.cols]);
+            data.Add(new float[this.cols]);
             for(int j = 0; j < this.cols; j++)
             {
-                matrix[i][j] += mat.matrix[i][j];
+                data[i][j] += mat.data[i][j];
             }
         }
     }
@@ -109,14 +106,28 @@ class Matrix
         Matrix result = new Matrix(this.cols, this.rows);
         for(int i = 0; i < this.rows; i++)
         {
-            matrix.Add(new float[this.cols]);
+            data.Add(new float[this.cols]);
             for(int j = 0; j < this.cols; j++)
             {
-                result.matrix[j][i] = this.matrix[i][j];
+                result.data[j][i] = this.data[i][j];
             }
         }
         
         return result;
     }
+
+
+    // public void map(func)
+    // {
+    //     for(int i = 0; i < this.rows; i++)
+    //     {
+    //         data.Add(new float[this.cols]);
+    //         for(int j = 0; j < this.cols; j++)
+    //         {
+    //             float val = this.data[j][i];
+    //             this.data[j][i] = func(val);
+    //         }
+    //     }
+    // }
     
 }
