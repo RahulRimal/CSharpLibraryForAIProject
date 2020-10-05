@@ -13,7 +13,4 @@ class NeuralNetwork
         this.outputNodes = numO;
     }
 
-
-
-
 }
