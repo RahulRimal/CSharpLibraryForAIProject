@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 class Matrix
 {
 
@@ -30,7 +33,7 @@ class Matrix
             data.Add(new float[this.cols]);
             for(int j = 0; j < this.cols; j++)
             {
-                data[i][j] = random.Next(20);
+                data[i][j] = random.Next(-1,1);
             }
         }
     }
@@ -117,17 +120,51 @@ class Matrix
     }
 
 
-    // public void map(func)
-    // {
-    //     for(int i = 0; i < this.rows; i++)
-    //     {
-    //         data.Add(new float[this.cols]);
-    //         for(int j = 0; j < this.cols; j++)
-    //         {
-    //             float val = this.data[j][i];
-    //             this.data[j][i] = func(val);
-    //         }
-    //     }
-    // }
+    public static Matrix fromArray(float[] arr)
+    {
+        Matrix m = new Matrix(arr.Length, 1);
+        for(int i = 0; i < arr.Length; i++)
+        {
+            m.data[i][0] = arr[i];
+        }
+        return m;
+    }
+
+    public static float[] toArray(Matrix mat)
+    {
+        List<float> arra = new List<float>(); 
+        for(int i = 0; i < mat.rows; i++)
+        {
+            for(int j = 0; j < mat.cols; j++)
+            {
+                arra.Add(mat.data[i][j]);
+            }
+        }
+        return arra.ToArray();   
+    }
+
+    public float sigmoid(float x)
+    {
+        double num = (double) x;
+        double res = 1/( 1 + Math.Exp(-num));
+        return (float) res;
+    }
+
+
+    public void map(string name)
+    {
+        if(name == "sigmoid")
+        {
+            for(int i = 0; i < this.rows; i++)
+            {
+                for(int j = 0; j < this.cols; j++)
+                {
+                    float val = this.data[i][j];
+
+                    this.data[i][j] = sigmoid(val);
+                }
+            }
+        }
+    }
     
 }
