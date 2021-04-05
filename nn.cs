@@ -48,4 +48,37 @@ class NeuralNetwork
 
     }
 
+    public void train(float[] inputs, float[] target)
+    {
+      // float[] output = this.feedForward(inputs);
+
+      Matrix inputss = Matrix.fromArray(inputs);
+      Matrix hidden = Matrix.multiply(this.weights_ih, inputss);
+      hidden.add(this.bias_h);
+
+      hidden.map("sigmoid");
+
+      Matrix outputs = Matrix.multiply(this.weights_ho, hidden);
+      outputs.add(this.bias_o);
+        
+      outputs.map("sigmoid");
+
+      Matrix targets = Matrix.fromArray(target);
+
+
+      // Calculating the error (for back prop)
+
+      Matrix outputErrors = Matrix.subtract(targets, outputs);
+
+      // Calculating hidden layer errors
+      Matrix weights_ho_transpose = Matrix.transpose(this.weights_ho);
+
+      Matrix hidden_errors = Matrix.multiply(weights_ho_transpose, outputErrors);
+
+      Console.WriteLine(outputs.data[0][0]);
+      Console.WriteLine(targets.data[0][0]);
+      Console.WriteLine(outputErrors.data[0][0]);
+
+    }
+
 }

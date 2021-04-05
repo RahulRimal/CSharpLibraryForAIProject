@@ -104,15 +104,14 @@ class Matrix
     }
 
 
-    public Matrix transpose()
+    public static Matrix transpose(Matrix matrix)
     {
-        Matrix result = new Matrix(this.cols, this.rows);
-        for(int i = 0; i < this.rows; i++)
+        Matrix result = new Matrix(matrix.cols, matrix.rows);
+        for(int i = 0; i < matrix.rows; i++)
         {
-            data.Add(new float[this.cols]);
-            for(int j = 0; j < this.cols; j++)
+            for(int j = 0; j < matrix.cols; j++)
             {
-                result.data[j][i] = this.data[i][j];
+                result.data[j][i] = matrix.data[i][j];
             }
         }
         
@@ -128,6 +127,21 @@ class Matrix
             m.data[i][0] = arr[i];
         }
         return m;
+    }
+
+    public static Matrix subtract(Matrix a, Matrix b)
+    {
+      Matrix result = new Matrix(a.rows, a.cols);
+      for(int i = 0; i < result.rows; i++)
+        {
+            for(int j = 0; j < result.cols; j++)
+            {
+                result.data[i][j] = a.data[i][j] - b.data[i][j];
+            }
+        }
+
+        return result;
+
     }
 
     public static float[] toArray(Matrix mat)
