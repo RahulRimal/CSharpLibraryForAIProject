@@ -9,6 +9,20 @@ class NeuralNetwork
     Matrix weights_ho;
     Matrix bias_h;
     Matrix bias_o;
+    public float learning_rate;
+
+    public float sigmoid(float x)
+    {
+      double num = (double) x;
+      double res = 1/( 1 + Math.Exp(-num));
+      return (float) res;
+    }
+
+    public float dsigmoid(float y)
+    {
+      // return sigmoid(x) * (1-sigmoid(x));
+      return y*(1-y);
+    }
 
 
     public NeuralNetwork(int input_nodes, int hidden_nodes, int output_nodes)
@@ -26,6 +40,7 @@ class NeuralNetwork
         this.bias_o = new Matrix(this.output_nodes, 1);
         this.bias_h.randomize();
         this.bias_o.randomize();
+        this.learning_rate = 0.1f;
     }
 
 
@@ -48,12 +63,12 @@ class NeuralNetwork
 
     }
 
-    public void train(float[] inputs, float[] target)
+    public void train(float[] input_array, float[] target_array)
     {
-      // float[] output = this.feedForward(inputs);
+      // float[] output = this.feedForward(inputss);
 
-      Matrix inputss = Matrix.fromArray(inputs);
-      Matrix hidden = Matrix.multiply(this.weights_ih, inputss);
+      Matrix inputs = Matrix.fromArray(input_array);
+      Matrix hidden = Matrix.multiply(this.weights_ih, inputs);
       hidden.add(this.bias_h);
 
       hidden.map("sigmoid");
@@ -63,21 +78,42 @@ class NeuralNetwork
         
       outputs.map("sigmoid");
 
-      Matrix targets = Matrix.fromArray(target);
+      Matrix targets = Matrix.fromArray(target_array);
 
 
       // Calculating the error (for back prop)
+      Matrix output_errors = Matrix.subtract(targets, outputs);
 
-      Matrix outputErrors = Matrix.subtract(targets, outputs);
+      // Calculating Gradient of hidden to output layer
+      Matrix gradients = Matrix.map(outputs, "dsigmoid");
+      gradients.multiply(output_errors);
+      gradients.multiply(this.learning_rate);
+
+      // Calculating hidden to output layers Deltas
+      Matrix hidden_Transpose = Matrix.transpose(hidden);
+      Matrix weights_ho_deltas = Matrix.multiply(gradients, hidden_Transpose);
+      this.weights_ho.add(weights_ho_deltas);  
 
       // Calculating hidden layer errors
       Matrix weights_ho_transpose = Matrix.transpose(this.weights_ho);
 
-      Matrix hidden_errors = Matrix.multiply(weights_ho_transpose, outputErrors);
+      Matrix hidden_errors = Matrix.multiply(weights_ho_transpose, output_errors);
 
-      Console.WriteLine(outputs.data[0][0]);
-      Console.WriteLine(targets.data[0][0]);
-      Console.WriteLine(outputErrors.data[0][0]);
+      // Calculating gradients of input to hidden layer
+      Matrix hidden_gradient = Matrix.map(hidden, "dsigmoid");
+      hidden_gradient.multiply(hidden_errors);
+      hidden_gradient.multiply(this.learning_rate);
+
+      //  Calculating hidden to output layers Deltas
+
+      Matrix inputs_Transpose = Matrix.transpose(inputs);
+      Matrix weights_ih_deltas = Matrix.multiply(hidden_gradient, inputs_Transpose);
+      this.weights_ih.add(weights_ih_deltas);
+
+
+      // Console.WriteLine(outputs.data[0][0]);
+      // Console.WriteLine(targets.data[0][0]);
+      // Console.WriteLine(output_errors.data[0][0]);
 
     }
 

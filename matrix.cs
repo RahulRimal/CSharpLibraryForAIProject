@@ -40,7 +40,7 @@ class Matrix
 
     public void multiply(float n)
     {
-        for(int i = 0; i < rows; i++)
+        for(int i = 0; i < this.rows; i++)
         {
             data.Add(new float[this.cols]);
             for(int j = 0; j < this.cols; j++)
@@ -48,6 +48,17 @@ class Matrix
                 data[i][j] *= n;
             }
         }
+    }
+
+    public void multiply(Matrix n)
+    {
+      for(int i = 0; i < this.rows; i++)
+      {
+        for(int j = 0; j < this.cols; j++)
+        {
+          data[i][j] *= n.data[i][j];
+        }
+      }
     }
 
     public static Matrix multiply(Matrix a, Matrix b)
@@ -109,6 +120,7 @@ class Matrix
         Matrix result = new Matrix(matrix.cols, matrix.rows);
         for(int i = 0; i < matrix.rows; i++)
         {
+            // data.Add(new float[this.cols]);
             for(int j = 0; j < matrix.cols; j++)
             {
                 result.data[j][i] = matrix.data[i][j];
@@ -157,13 +169,19 @@ class Matrix
         return arra.ToArray();   
     }
 
-    public float sigmoid(float x)
+    // public float sigmoid(float x)
+    // {
+    //     double num = (double) x;
+    //     double res = 1/( 1 + Math.Exp(-num));
+    //     return (float) res;
+    // }
+
+    public static float sigmoid(float x)
     {
         double num = (double) x;
         double res = 1/( 1 + Math.Exp(-num));
         return (float) res;
     }
-
 
     public void map(string name)
     {
@@ -180,5 +198,28 @@ class Matrix
             }
         }
     }
+
+    public static Matrix map(Matrix matrix, string name)
+    {
+      Matrix result = new Matrix(matrix.rows, matrix.cols);
+        if(name == "dsigmoid")
+        {
+            for(int i = 0; i < matrix.rows; i++)
+            {
+                for(int j = 0; j < matrix.cols; j++)
+                {
+                    float val = matrix.data[i][j];
+
+                    result.data[i][j] = sigmoid(val);
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+
+
     
 }
