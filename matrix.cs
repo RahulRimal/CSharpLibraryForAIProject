@@ -25,6 +25,19 @@ class Matrix
         }
     }
 
+    public Matrix copy()
+    {
+      Matrix m = new Matrix(this.rows, this.cols);
+      for (int i = 0; i < this.rows; i++)
+      {
+        for (int j = 0; j < this.cols; j++)
+        {
+          m.data[i][j] = this.data[i][j];
+        }
+      }
+    return m;
+  }
+
 
     public void randomize()
     {

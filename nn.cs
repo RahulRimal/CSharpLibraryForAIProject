@@ -42,6 +42,18 @@ class NeuralNetwork
         this.bias_o.randomize();
         this.learning_rate = 0.1f;
     }
+    public NeuralNetwork(NeuralNetwork a)
+    {
+      this.input_nodes = a.input_nodes;
+      this.hidden_nodes = a.hidden_nodes;
+      this.output_nodes = a.output_nodes;
+
+      this.weights_ih = a.weights_ih.copy();
+      this.weights_ho = a.weights_ho.copy();
+
+      this.bias_h = a.bias_h.copy();
+      this.bias_o = a.bias_o.copy();
+    }
 
 
     public float[] feedForward(float[] input_array)
@@ -92,7 +104,11 @@ class NeuralNetwork
       // Calculating hidden to output layers Deltas
       Matrix hidden_Transpose = Matrix.transpose(hidden);
       Matrix weights_ho_deltas = Matrix.multiply(gradients, hidden_Transpose);
-      this.weights_ho.add(weights_ho_deltas);  
+      
+      // Adjusting the weights by deltas
+      this.weights_ho.add(weights_ho_deltas);
+      // Adjusting the bias by deltas (which is just the gradients)
+      this.bias_o.add(gradients);
 
       // Calculating hidden layer errors
       Matrix weights_ho_transpose = Matrix.transpose(this.weights_ho);
@@ -108,8 +124,12 @@ class NeuralNetwork
 
       Matrix inputs_Transpose = Matrix.transpose(inputs);
       Matrix weights_ih_deltas = Matrix.multiply(hidden_gradient, inputs_Transpose);
+      
+      
       this.weights_ih.add(weights_ih_deltas);
 
+      // Adjusting the bias by deltas (which is just the gradients)
+      this.bias_h.add(hidden_gradient);
 
       // Console.WriteLine(outputs.data[0][0]);
       // Console.WriteLine(targets.data[0][0]);
@@ -117,4 +137,20 @@ class NeuralNetwork
 
     }
 
+    public NeuralNetwork copy()
+    {
+      return new NeuralNetwork(this);
+    }
+
 }
+
+// For the birdmutation
+// function mutate(x) {
+//   if (random(1) < 0.1) {
+//     let offset = randomGaussian() * 0.5;
+//     let newx = x + offset;
+//     return newx;
+//   } else {
+//     return x;
+//   }
+// }
